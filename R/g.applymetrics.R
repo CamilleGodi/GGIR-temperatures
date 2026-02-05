@@ -2,7 +2,8 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
                           n = 4, lb = 0.2, hb = 15,
                           zc.lb = 0.25, zc.hb = 3, zc.sb = 0.01,
                           zc.order = 2, 
-                          actilife_LFE = FALSE){
+                          actilife_LFE = FALSE, 
+                          temperature = c(NA)){
   # data should be a 3 column matrix with the x, y, and z acceleration
   data = data[, c("x", "y", "z")]
   
@@ -39,6 +40,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
   do.zcz = metrics2do$do.zcz
   do.brondcounts = metrics2do$do.brondcounts
   do.neishabouricounts = metrics2do$do.neishabouricounts
+  do.temperature = metrics2do$do.temperature
   allmetrics = c()
   averagePerEpoch = function(x,sf,epochsize) {
     x2 = cumsum(c(0,x))
@@ -364,5 +366,11 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
     allmetrics$NeishabouriCount_z = mycounts[, 3]
     allmetrics$NeishabouriCount_vm = mycounts[, 4]
   }
+  
+  # Just in order to have temperature stored in M$metashort after g.getmetadata step 
+  if (do.temperature == TRUE) {
+    allmetrics$temperature = temperature 
+  }
+  
   return(allmetrics)
 } 

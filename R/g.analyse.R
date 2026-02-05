@@ -209,6 +209,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                  midnightsi = midnightsi, params_247 = params_247, qcheck = qcheck,
                                  acc.metric = acc.metric, params_phyact = params_phyact)
   cosinor_coef = output_avday$cosinor_coef
+  cosinor_temperature_coef = output_avday$cosinor_temperature_coef
   
   #--------------------------------------------------------------
   # Analysis per day
@@ -379,5 +380,12 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   } else {
     cosinor_ts = c()
   }
-  invisible(list(summary = filesummary, daysummary = daysummary, cosinor_ts = cosinor_ts))
+  
+  if (length(cosinor_temperature_coef) > 0) {
+    cosinor_temperature_ts = cosinor_temperature_coef$coefext$cosinor_ts
+  } else {
+    cosinor_temperature_ts = c()
+  }
+  
+  invisible(list(summary = filesummary, daysummary = daysummary, cosinor_ts = cosinor_ts, cosinor_temperature_ts = cosinor_temperature_ts))
 }

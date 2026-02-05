@@ -6,6 +6,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
   
   # extract objects from lists in input:
   cosinor_coef = output_avday$cosinor_coef
+  cosinor_temperature_coef = output_avday$cosinor_temperature_coef
   daysummary = output_perday$daysummary
   ds_names = output_perday$ds_names
   lookat = metrics_nav$lookat
@@ -235,6 +236,45 @@ g.analyse.perfile = function(I, C, metrics_nav,
       filesummary[vi:(vi + 2)]  = c(cosinor_coef$IVIS$InterdailyStability,
                                     cosinor_coef$IVIS$IntradailyVariability,
                                     cosinor_coef$IVIS$phi)
+      s_names[vi:(vi + 2)] = c("IS", "IV", "phi")
+      vi = vi + 3
+    } else {
+      vi = vi + 21
+    }
+    
+    # Cosinor analysis for temperatures (no IS, IV or phi)
+    if (length(cosinor_temperature_coef) > 0) {
+      filesummary[vi]  = c(cosinor_temperature_coef$timeOffsetHours)
+      s_names[vi] = c("cosinor_temperature_timeOffsetHours")
+      vi = vi + 1
+      try(expr = {filesummary[vi:(vi + 5)]  = as.numeric(c(cosinor_temperature_coef$coef$params$mes,
+                                                           cosinor_temperature_coef$coef$params$amp,
+                                                           cosinor_temperature_coef$coef$params$acr,
+                                                           cosinor_temperature_coef$coef$params$acrotime,
+                                                           cosinor_temperature_coef$coef$params$ndays,
+                                                           cosinor_temperature_coef$coef$params$R2))}, silent = TRUE)
+      s_names[vi:(vi + 5)] = c("cosinor_temperature_mes", "cosinor_temperature_amp", "cosinor_temperature_acrophase",
+                               "cosinor_temperature_acrotime", "cosinor_temperature_ndays", "cosinor_temperature_R2")
+      vi = vi + 6
+      try(expr = {filesummary[vi:(vi + 10)]  = c(cosinor_temperature_coef$coefext$params$minimum,
+                                                 cosinor_temperature_coef$coefext$params$amp,
+                                                 cosinor_temperature_coef$coefext$params$alpha,
+                                                 cosinor_temperature_coef$coefext$params$beta,
+                                                 cosinor_temperature_coef$coefext$params$acrotime,
+                                                 cosinor_temperature_coef$coefext$params$UpMesor,
+                                                 cosinor_temperature_coef$coefext$params$DownMesor,
+                                                 cosinor_temperature_coef$coefext$params$MESOR,
+                                                 cosinor_temperature_coef$coefext$params$ndays,
+                                                 cosinor_temperature_coef$coefext$params$F_pseudo,
+                                                 cosinor_temperature_coef$coefext$params$R2)}, silent = TRUE)
+      s_names[vi:(vi + 10)] = c("cosinorExt_temperature_minimum", "cosinorExt_temperature_amp", "cosinorExt_temperature_alpha",
+                                "cosinorExt_temperature_beta", "cosinorExt_temperature_acrotime", "cosinorExt_temperature_UpMesor",
+                                "cosinorExt_temperature_DownMesor", "cosinorExt_temperature_MESOR",
+                                "cosinorExt_temperature_ndays", "cosinorExt_temperature_F_pseudo", "cosinorExt_temperature_R2")
+      vi = vi + 11
+      filesummary[vi:(vi + 2)]  = c(cosinor_temperature_coef$IVIS$InterdailyStability,
+                                    cosinor_temperature_coef$IVIS$IntradailyVariability,
+                                    cosinor_temperature_coef$IVIS$phi)
       s_names[vi:(vi + 2)] = c("IS", "IV", "phi")
       vi = vi + 3
     } else {

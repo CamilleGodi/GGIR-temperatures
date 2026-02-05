@@ -123,10 +123,22 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
   } else {
     cosinor_coef = c()
   }
+  
+  if (params_247[["dotemperaturecosinor"]] == TRUE) {
+    cosinor_temperature_coef = apply_cosinor_IS_IV_Analyses(ts = IMP$metashort[, c("timestamp", "temperature")],
+                                                qcheck = qcheck,
+                                                midnightsi, epochsizes = c(ws3, ws2),
+                                                threshold = params_phyact[["threshold.lig"]][1],  # only use one threshold
+                                                doISIV = FALSE) 
+  } else {
+    cosinor_temperature_coef = c()
+  }
+  
   invisible(list(igfullr_names = igfullr_names,
                  igfullr = igfullr, QUAN = QUAN,
                  qlevels_names = qlevels_names,
                  ML5AD = ML5AD,
                  ML5AD_names = ML5AD_names,
-                 cosinor_coef = cosinor_coef))
+                 cosinor_coef = cosinor_coef,
+                 cosinor_temperature_coef = cosinor_temperature_coef))
 }

@@ -31,11 +31,11 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       unknown_param_names = argNames[argNames %in% known_param_names == FALSE]
       if (length(unknown_param_names) == 1) {
         stop(paste0("\nParameter ", unknown_param_names,
-                       " is unknown to GGIR and will not be used, ",
+                    " is unknown to GGIR and will not be used, ",
                     "please check for typos or remove."), call. = FALSE)
       } else {
         stop(paste0("\nParameters ", paste0(unknown_param_names, collapse = " and "),
-                       " are unknown to GGIR and will not be used, ",
+                    " are unknown to GGIR and will not be used, ",
                     "please check for typos or remove these."), call. = FALSE)
       }
       rm(unknown_param_names)

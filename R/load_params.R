@@ -65,7 +65,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                           do.neishabouricounts = FALSE,
                           hb = 15, lb = 0.2, n = 4,
                           zc.lb = 0.25, zc.hb = 3, zc.sb = 0.01, zc.order = 2, zc.scale = 1,
-                          actilife_LFE = FALSE)
+                          actilife_LFE = FALSE,
+                          do.temperature = FALSE)
   }
   if ("rawdata" %in% topic) {
     params_rawdata = list(
@@ -99,7 +100,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                       part6CR = FALSE, part6HCA = FALSE,
                       part6Window = c("start", "end"),
                       part6DFA = FALSE, clevels = c(30, 150),
-                      SRI2_WASOmin = 30)
+                      SRI2_WASOmin = 30, 
+                      dotemperaturecosinor = FALSE)
 
   }
   if ("phyact" %in% topic) {

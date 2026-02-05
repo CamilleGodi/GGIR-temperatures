@@ -58,6 +58,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                           do.zcz = params_metrics[["do.zcz"]],
                           do.brondcounts = params_metrics[["do.brondcounts"]],
                           do.neishabouricounts = params_metrics[["do.neishabouricounts"]],
+                          do.temperature = params_metrics[["do.temperature"]],
                           stringsAsFactors = FALSE)
   
   nmetrics = sum(c(params_metrics[["do.bfen"]], params_metrics[["do.enmo"]],
@@ -77,7 +78,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                    params_metrics[["do.bfz"]],
                    params_metrics[["do.zcx"]], params_metrics[["do.zcy"]],
                    params_metrics[["do.zcz"]], params_metrics[["do.brondcounts"]] * 3,
-                   params_metrics[["do.neishabouricounts"]] * 4))
+                   params_metrics[["do.neishabouricounts"]] * 4,
+                   params_metrics[["do.temperature"]]))
   if (length(myfun) != 0) {
     nmetrics = nmetrics + length(myfun$colnames)
     # check myfun object already, because we do not want to discover
@@ -333,8 +335,10 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         if (light.available) {
           light = data[, "light"]
         }
-        if (use.temp) {
+        if (use.temp | metrics2do$do.temperature) {
           temperature = data[, "temperature"]
+        } else {
+          temperature = c()
         }
 
         # rescale data
@@ -357,7 +361,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                                     zc.hb = params_metrics[["zc.hb"]],
                                     zc.sb = params_metrics[["zc.sb"]],
                                     zc.order = params_metrics[["zc.order"]],
-                                    actilife_LFE = params_metrics[["actilife_LFE"]])
+                                    actilife_LFE = params_metrics[["actilife_LFE"]],
+                                    temperature = temperature)
         # round decimal places, because due to averaging we get a lot of information
         # that only slows down computation and increases storage size
         accmetrics = lapply(accmetrics, round, n_decimal_places)
