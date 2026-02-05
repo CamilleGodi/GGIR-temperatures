@@ -128,8 +128,7 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
     cosinor_temperature_coef = apply_cosinor_IS_IV_Analyses(ts = IMP$metashort[, c("timestamp", "temperature")],
                                                 qcheck = qcheck,
                                                 midnightsi, epochsizes = c(ws3, ws2),
-                                                threshold = params_phyact[["threshold.lig"]][1],  # only use one threshold
-                                                doISIV = FALSE) 
+                                                threshold = params_phyact[["threshold.lig"]][1]) # only use one threshold
   } else {
     cosinor_temperature_coef = c()
   }

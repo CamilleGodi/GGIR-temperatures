@@ -1,4 +1,4 @@
-cosinor_IS_IV_Analyses = function(Xi, epochsize = 60, timeOffsetHours = 0, threshold = NULL, doISIV = TRUE) {
+cosinor_IS_IV_Analyses = function(Xi, epochsize = 60, timeOffsetHours = 0, threshold = NULL) {
   if (length(threshold) > 1) {
     threshold = threshold[1]
     warning("Multiple threshold values supplied to cosinor analysis, only first value used.")
@@ -49,15 +49,15 @@ cosinor_IS_IV_Analyses = function(Xi, epochsize = 60, timeOffsetHours = 0, thres
   k = ceiling(abs(coef$params$acr) / (pi * 2))
   if (coef$params$acr < 0) coef$params$acr = coef$params$acr + (k * 2 * pi)
   
-  if (doISIV) {
-    # Perform IVIS on the same input signal to allow for direct comparison
-    IVIS = g.IVIS(Xi = Xi,
-                  epochSize = epochsize, 
-                  threshold = threshold) # take log, because Xi is logtransformed with offset of 1
-  } else {
-    IVIS = invisible(list(InterdailyStability = NA, IntradailyVariability = NA, phi = NA))
-  }
-
+  IVIS <- tryCatch({
+    g.IVIS(Xi = Xi,
+           epochSize = epochsize, 
+           threshold = threshold) # take log, because Xi is logtransformed with offset of 1
+  }, error = function(e) {
+    cat("Unable to calculate IS/IV:", conditionMessage(e), "\n")
+    list(InterdailyStability = NA, IntradailyVariability = NA, phi = NA)
+  })
+  
   coefext$params$R2 = cor(coefext$cosinor_ts$original, coefext$cosinor_ts$fittedYext)^2
   coef$params$R2 = cor(coefext$cosinor_ts$original, coefext$cosinor_ts$fittedY)^2
   
