@@ -54,7 +54,7 @@ cosinor_IS_IV_Analyses = function(Xi, epochsize = 60, timeOffsetHours = 0, thres
            epochSize = epochsize, 
            threshold = threshold) # take log, because Xi is logtransformed with offset of 1
   }, error = function(e) {
-    cat("Unable to calculate IS/IV:", conditionMessage(e), "\n")
+    #cat("Unable to calculate IS/IV:", conditionMessage(e), "\n")
     list(InterdailyStability = NA, IntradailyVariability = NA, phi = NA)
   })
   

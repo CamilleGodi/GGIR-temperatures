@@ -103,7 +103,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
   # data format names and codes
   # and sample rate
   actiwatchData = length(grep(pattern = "actiwatch", x = params_general[["dataFormat"]], ignore.case = TRUE)) > 0
-  if (params_general[["dataFormat"]] == "ukbiobank_csv") {
+  if (params_general[["dataFormat"]] == "ukbiobank_csv" | params_general[["dataFormat"]] == "ukbiobank_full_csv") {
     deviceName = "Axivity"
     monn = "axivity"
     monc = 4
@@ -277,6 +277,17 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         # extract date/timestamp from fileheader
         timestamp = unlist(strsplit(header," - "))[2]
         timestamp_POSIX = as.POSIXlt(timestamp, tz = tz)
+        D = list(data = D, epochSize = epSizeShort, startTime = timestamp_POSIX)
+      } else if (params_general[["dataFormat"]] == "ukbiobank_full_csv") {
+        # read data
+        D = data.table::fread(input = fnames[i],
+                              header = TRUE,
+                              data.table = FALSE,
+                              sep = ",")
+        header = as.character(data.table::fread(input = fnames[i], header = FALSE,
+                                                nrows = 1, data.table = FALSE, sep = ",")[1, 1])
+        timestamp = D$time[1]
+        timestamp_POSIX = as.POSIXlt(timestamp, tz = tz, format = "%Y-%m-%d %H:%M:%OS")
         D = list(data = D, epochSize = epSizeShort, startTime = timestamp_POSIX)
       } else if (params_general[["dataFormat"]] == "sensewear_xls") {
         # read data
@@ -464,7 +475,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                                            tz = tz)
       # File formats with possibly more than 1 column
       morethan1 = c("actigraph_csv", "sensewear_xls", "actiwatch_awd",
-                    "actiwatch_csv", "phb_xlsx", "actical_csv", "fitbit_json") #, "
+                    "actiwatch_csv", "phb_xlsx", "actical_csv", "fitbit_json", "ukbiobank_full_csv") #, "
       if (params_general[["dataFormat"]] %in% morethan1 == FALSE) {
         M$metashort = data.frame(timestamp = time_shortEp_8601,
                                  ExtAct = D[1:length(time_shortEp_8601),1],stringsAsFactors = FALSE)
@@ -483,6 +494,11 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         imp = D[, 2]
         M$metashort$LFENMO = M$metashort$LFENMO/1000
         nonwear_in_data = TRUE
+      } else if (params_general[["dataFormat"]] == "ukbiobank_full_csv") {
+        names(M$metashort)[3] = "ENMO"
+        names(M$metashort)[16] = "temperature"
+        nonwear_in_data = TRUE       
+        imp = c(rep(0, times = nrow(D)))  # Artificially create imputation status column (= 0 everywhere because theorically never imputed)
       } else if (params_general[["dataFormat"]] == "fitbit_json") {
         nonwear_in_data = TRUE
         imp = unlist(D[, "ExtAct"])
@@ -531,7 +547,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         nonwear_in_data = FALSE
       }
       if (nonwear_in_data == TRUE) {
-        if (params_general[["dataFormat"]] == "ukbiobank_csv") {
+        if (params_general[["dataFormat"]] == "ukbiobank_csv" | params_general[["dataFormat"]] == "ukbiobank_full_csv") {
           # Take long epoch mean of UK Biobank based invalid data indicater per 5 seconds
           imp2 = cumsum(imp)
           imp3 = diff(imp2[seq(1, length(imp2),

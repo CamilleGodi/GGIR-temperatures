@@ -24,3 +24,4 @@ docs/reference/*.html
 test_*.R
 launch_*.sh
 slurm_*
+run_ggir.R
