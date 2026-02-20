@@ -119,7 +119,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   params_output = params$params_output
   params_general = params$params_general
   
-  if (params_general[["dataFormat"]] == "ukbiobank") {
+  if (params_general[["dataFormat"]] == "ukbiobank" | params_general[["dataFormat"]] == "ukbiobank_full_csv") {
     warning("\nRunnning part 3, 4, and 5 are disabled when dataFormat is ukbiobank epoch", call. = FALSE)
     dopart3 = dopart4 = dopart5 = FALSE
     mode = mode[which(mode <= 2)]

@@ -283,9 +283,8 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         D = data.table::fread(input = fnames[i],
                               header = TRUE,
                               data.table = FALSE,
-                              sep = ",")
-        header = as.character(data.table::fread(input = fnames[i], header = FALSE,
-                                                nrows = 1, data.table = FALSE, sep = ",")[1, 1])
+                              sep = ",",
+                              select = c("time", "enmoTrunc","temp","light"))
         timestamp = D$time[1]
         timestamp_POSIX = as.POSIXlt(timestamp, tz = tz, format = "%Y-%m-%d %H:%M:%OS")
         D = list(data = D, epochSize = epSizeShort, startTime = timestamp_POSIX)
@@ -496,7 +495,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         nonwear_in_data = TRUE
       } else if (params_general[["dataFormat"]] == "ukbiobank_full_csv") {
         names(M$metashort)[3] = "ENMO"
-        names(M$metashort)[16] = "temperature"
+        names(M$metashort)[4] = "temperature"
         nonwear_in_data = TRUE       
         imp = c(rep(0, times = nrow(D)))  # Artificially create imputation status column (= 0 everywhere because theorically never imputed)
       } else if (params_general[["dataFormat"]] == "fitbit_json") {
